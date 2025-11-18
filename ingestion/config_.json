@@ -1,0 +1,14 @@
+{
+"catalog":"pdm-pdm-gsc-bi-{env}",
+"schema": "demand_planning",
+"raw_bucket" : "gilead-edp-pdm-{env}-us-west-2-pdm-gsc-bi",
+"raw_bucket_mount_point" : "/mnt/pdm-gsc-bi",
+"raw_data_directory": "demand_planning",
+
+"future_orders_file": "future_orders_csv.csv",
+"location_file": "location_csv.csv",
+"preprocess_file": "preprocess_csv.csv",
+"product_file": "product_csv.csv",
+"product_detail_file": "product_detail_csv.csv",
+"uom_file": "uom_csv.csv"
+}

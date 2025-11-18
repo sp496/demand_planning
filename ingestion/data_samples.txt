@@ -1,0 +1,30 @@
+data samples
+"location_file": "location_csv.csv",
+ml_country_code  ml_country  ml_sub_region  ml_region  ml_cluster  ml_country_code_copy  ml_country_copy  ml_sub_region_copy  ml_region_copy  ml_cluster_copy
+AT  Austria  ACE - MM  ACE  AT  AT  Austria  ACE - MM  ACE  AT
+BE  Belgium  ACE - MM  ACE  BeLux  BE  Belgium  ACE - MM  ACE  BeLux
+DK  Denmark  ACE - MM  ACE  Nordics  DK  Denmark  ACE - MM  ACE  Nordics
+
+"preprocess_file": "preprocess_csv.csv",
+mprep_country_src  mprep_product_name_src  mprep_sku_src  mprep_country_target  mprep_product_name_target  mprep_sku_target  mprep_key  mprep_note
+Clinical_198  AmBisome  104331500  Clinical Trial  AmBisome  104331500  Clinical_198 | AmBisome | 104331500  
+Clinical_198  Vosevi  102700  Clinical Trial  Vosevi  102700  Clinical_198 | Vosevi | 102700  
+Clinical_198  Biktarvy  102310  Clinical Trial  Biktarvy  102310  Clinical_198 | Biktarvy | 102310  
+
+"product_file": "product_csv.csv",
+mp_part_num_country_code  mp_part_num_country  mp_prod_country  mp_prod_country_code  mp_sub_region  mp_region  mp_country_code  mp_global_sku_segment  mp_region_sku_segment  mp_cluster  mp_sku  mp_country  mp_sku_detail  mp_product_name  mp_primary_uom  mp_mto_mts_flag  mp_partner_flag  mp_tender_flag  mp_sample_flag  mp_other_flag  mp_sku_status  mp_mat_type  mp_exclude_flag  mp_note
+101859AL  101859Albania  EPCLUSA 400/100 MGAlbania  EPCLUSA 400/100 MGAL  ACE - MM  ACE  AL  Mature  Inactive  EDM14  101859  Albania  Epclusa UK/IRE  EPCLUSA 400/100 MG  bt  MTO  No  Yes  No  Lenis  Inactive  No  No  
+104531500AL  104531500Albania  AMBISOME 50 MGAlbania  AMBISOME 50 MGAL  ACE - MM  ACE  AL  Mature  C  EDM14  104531500  Albania  AMB,50mg,10PK,IRELAND  AMBISOME 50 MG  10pk  MTO  No  Yes  No  Lenis  Active  No  No  
+
+"product_detail_file": "product_detail_csv.csv",
+mpd_product_name  mpd_brand  mpd_therapeutic_area  mpd_evg_flag  mpd_ftc_flag  mpd_taf_tdf_flag  mpd_npi_mature_flag  mpd_product_name_copy  mpd_brand_copy  mpd_therapeutic_area_copy  mpd_evg_flag_copy  mpd_ftc_flag_copy  mpd_taf_tdf_flag_copy  mpd_npi_mature_flag_copy
+agLDV/SOF  agLDV/SOF  HCV  Non-EVG  Non-FTC  Others  Mature  agLDV/SOF  agLDV/SOF  HCV  Non-EVG  Non-FTC  Others  Mature
+agSOF/VEL  agSOF/VEL  HCV  Non-EVG  Non-FTC  Others  Mature  agSOF/VEL  agSOF/VEL  HCV  Non-EVG  Non-FTC  Others  Mature
+
+"future_orders_file": "future_orders_csv.csv",
+Line Schedule Ship Date  Product Name  Product Number  Ship To Location Country  Sales UOM Code  Standard UOM Code  Customer Name  Ordered Quantity (Sales UoM)
+2024-04  Apheresis (Commercial)  KG00601  CA  ea  ea  Alberta Health Services - Accounts Payable  0
+2024-04  Apheresis (Commercial)  KG00601  JP  ea  ea  ????????  0
+2024-04  AMB,50mg,10PK,CC34,SPAIN AMB13 SPA  104341500  ES  pk  pk  COMPLEJO HOSP. LLERENA - ZAFRA  5
+
+
