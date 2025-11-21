@@ -281,3 +281,63 @@
 # MAGIC   load_date TIMESTAMP
 # MAGIC )
 # MAGIC USING DELTA;
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### scv_demantra_staging_data
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC DROP TABLE IF EXISTS `pdm-pdm-gsc-bi-dev`.demand_planning.scv_demantra_staging_data;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC CREATE TABLE `pdm-pdm-gsc-bi-dev`.demand_planning.scv_demantra_staging_data (
+# MAGIC   row_id BIGINT GENERATED ALWAYS AS IDENTITY,
+# MAGIC   sdate TIMESTAMP,
+# MAGIC   level1 STRING,
+# MAGIC   level2 STRING,
+# MAGIC   level3 STRING,
+# MAGIC   level4 STRING,
+# MAGIC   level5 DOUBLE,
+# MAGIC   level6 STRING,
+# MAGIC   level7 STRING,
+# MAGIC   ebs_bh_req_qty_rd DOUBLE,
+# MAGIC   sdata4 DOUBLE,
+# MAGIC   fcst_hyp_financial DOUBLE,
+# MAGIC   cen_inv_adjustment DOUBLE,
+# MAGIC   cen_hyp_ttl_dm_fcst DOUBLE,
+# MAGIC   gil_total_dem_fcst DOUBLE,
+# MAGIC   gil_hyp_fcst_override DOUBLE,
+# MAGIC   gil_upside_fcst_override DOUBLE,
+# MAGIC   gil_grand_total_fcst DOUBLE,
+# MAGIC   gil_add_gps_fcst DOUBLE,
+# MAGIC   gil_add_gps_inv_adj DOUBLE,
+# MAGIC   gil_andean_fcst DOUBLE,
+# MAGIC   gil_andean_inv_adj DOUBLE,
+# MAGIC   creation_date STRING,
+# MAGIC   last_update_date TIMESTAMP,
+# MAGIC   batch_id DOUBLE,
+# MAGIC   process_flag STRING,
+# MAGIC   err_message STRING,
+# MAGIC   additional_info1 STRING,
+# MAGIC   additional_info2 STRING,
+# MAGIC   additional_info3 STRING,
+# MAGIC   additional_info4 STRING,
+# MAGIC   additional_info5 STRING,
+# MAGIC   additional_info6 STRING,
+# MAGIC   additional_info7 STRING,
+# MAGIC   additional_info8 STRING,
+# MAGIC   additional_info9 STRING,
+# MAGIC   active STRING,
+# MAGIC   published_date TIMESTAMP,
+# MAGIC   etl_added_ts TIMESTAMP,
+# MAGIC   load_date TIMESTAMP
+# MAGIC )
+# MAGIC USING DELTA;
+
+# COMMAND ----------
+

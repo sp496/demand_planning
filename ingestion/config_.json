@@ -10,5 +10,6 @@
 "preprocess_file": "preprocess_csv.csv",
 "product_file": "product_csv.csv",
 "product_detail_file": "product_detail_csv.csv",
-"uom_file": "uom_csv.csv"
+"uom_file": "uom_csv.csv",
+"forecast_data_file": "forecastdata.csv"
 }
