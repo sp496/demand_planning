@@ -384,12 +384,11 @@ spark_df.write.format("delta") \
 
 # COMMAND ----------
 
-# Read CSV (tab-separated)
+# Read CSV
 df = pd.read_csv(
     f"/dbfs{os.path.join(raw_bucket_mount_point, raw_data_directory, config['forecast_data_file'])}",
     dtype=str,
-    encoding='latin1',
-    sep='\t'
+    encoding='latin1'
 )
 
 # Convert pandas to spark
