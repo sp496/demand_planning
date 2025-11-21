@@ -150,6 +150,10 @@ spark_df = spark_df.select(
     F.lit(None).cast("timestamp").alias("valid_from"),
     F.lit(None).cast("timestamp").alias("valid_to"),
     F.lit(None).alias("is_valid"),
+    F.current_timestamp().alias("date_created"),
+    F.lit(None).alias("created_by"),
+    F.lit(None).alias("lastupdatedby"),
+    F.lit(None).cast("timestamp").alias("lastupdatedon"),
     F.lit(None).alias("patent_expiration_us"),
     F.lit(None).alias("patent_expiration_eu"),
     F.lit(None).alias("is_product_strategy"),
@@ -163,10 +167,212 @@ spark_df = spark_df.select(
     F.trim(F.col("mpd_npi_mature_flag_copy")).alias("mpd_npi_mature_flag_copy")
 )
 
-# # Write to Delta table
-# spark_df.write.format("delta") \
-#     .mode("overwrite") \
-#     .option("overwriteSchema", "false") \
-#     .saveAsTable(f"`{catalog}`.{schema}.scv_dim_prod_uom_conversion")
+# Write to Delta table
+spark_df.write.format("delta") \
+    .mode("overwrite") \
+    .option("overwriteSchema", "false") \
+    .saveAsTable(f"`{catalog}`.{schema}.scv_dim_products")
 
-spark_df.display()
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### scv_dim_country
+
+# COMMAND ----------
+
+# Read CSV
+df = pd.read_csv(
+    f"/dbfs{os.path.join(raw_bucket_mount_point, raw_data_directory, config['location_file'])}",
+    dtype=str,
+    encoding='latin1'
+)
+
+# Convert pandas to spark
+spark_df = spark.createDataFrame(df)
+
+# Drop any unnamed columns
+spark_df = spark_df.drop(*[col for col in spark_df.columns if col.startswith("Unnamed")])
+
+# Clean + select + cast
+spark_df = spark_df.select(
+    F.lit(None).cast("BIGINT").alias("countryid"),
+    F.lit(None).cast("BIGINT").alias("iso_numeric_code"),
+    F.lit(None).alias("iso_country_code2"),
+    F.lit(None).alias("iso_country_code3"),
+    F.lit(None).alias("iso_country_name"),
+    F.lit(None).alias("iso_country_formal_name"),
+    F.lit(None).alias("region_name"),
+    F.lit(None).alias("sub_region_name"),
+    F.lit(None).alias("gvault_country_code"),
+    F.lit(None).alias("gvault_country_name"),
+    F.lit(None).alias("gpid_country_name"),
+    F.lit(None).alias("lastupdatedby"),
+    F.lit(None).cast("timestamp").alias("lastupdatedon"),
+    F.lit("DEMAND PLANNING").alias("source_system"),
+    F.current_timestamp().alias("date_created"),
+    F.lit(None).alias("created_by"),
+    F.lit(None).alias("excl_fr_regulatory_constraint"),
+    F.trim(F.col("ml_cluster")).alias("ml_cluster"),
+    F.trim(F.col("ml_country_code_copy")).alias("ml_country_code_copy"),
+    F.trim(F.col("ml_country_copy")).alias("ml_country_copy"),
+    F.trim(F.col("ml_sub_region_copy")).alias("ml_sub_region_copy"),
+    F.trim(F.col("ml_region_copy")).alias("ml_region_copy"),
+    F.trim(F.col("ml_cluster_copy")).alias("ml_cluster_copy")
+)
+
+# Write to Delta table
+spark_df.write.format("delta") \
+    .mode("overwrite") \
+    .option("overwriteSchema", "false") \
+    .saveAsTable(f"`{catalog}`.{schema}.scv_dim_country")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### scv_stage_dp_preprocess
+
+# COMMAND ----------
+
+# Read CSV
+df = pd.read_csv(
+    f"/dbfs{os.path.join(raw_bucket_mount_point, raw_data_directory, config['preprocess_file'])}",
+    dtype=str,
+    encoding='latin1'
+)
+
+# Convert pandas to spark
+spark_df = spark.createDataFrame(df)
+
+# Drop any unnamed columns
+spark_df = spark_df.drop(*[col for col in spark_df.columns if col.startswith("Unnamed")])
+
+# Clean + select + cast
+spark_df = spark_df.select(
+    F.trim(F.col("mprep_country_src")).alias("mprep_country_src"),
+    F.trim(F.col("mprep_product_name_src")).alias("mprep_product_name_src"),
+    F.trim(F.col("mprep_sku_src")).alias("mprep_sku_src"),
+    F.trim(F.col("mprep_country_target")).alias("mprep_country_target"),
+    F.trim(F.col("mprep_product_name_target")).alias("mprep_product_name_target"),
+    F.trim(F.col("mprep_sku_target")).alias("mprep_sku_target"),
+    F.trim(F.col("mprep_note")).alias("mprep_note")
+)
+
+# Write to Delta table
+spark_df.write.format("delta") \
+    .mode("overwrite") \
+    .option("overwriteSchema", "false") \
+    .saveAsTable(f"`{catalog}`.{schema}.scv_stage_dp_preprocess")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### scv_fact_master_product
+
+# COMMAND ----------
+
+# Read CSV
+df = pd.read_csv(
+    f"/dbfs{os.path.join(raw_bucket_mount_point, raw_data_directory, config['product_file'])}",
+    dtype=str,
+    encoding='latin1'
+)
+
+# Convert pandas to spark
+spark_df = spark.createDataFrame(df)
+
+# Drop any unnamed columns
+spark_df = spark_df.drop(*[col for col in spark_df.columns if col.startswith("Unnamed")])
+
+# Clean + select + cast
+spark_df = spark_df.select(
+    F.lit(None).cast("BIGINT").alias("f_mp_id"),
+    F.trim(F.col("mp_sku")).alias("sku"),
+    F.trim(F.col("mp_country")).alias("country"),
+    F.trim(F.col("mp_sku_detail")).alias("sku_detail"),
+    F.trim(F.col("mp_product_name")).alias("product_name"),
+    F.trim(F.col("mp_primary_uom")).alias("primary_uom"),
+    F.trim(F.col("mp_mto_mts_flag")).alias("mto_mts_flag"),
+    F.trim(F.col("mp_partner_flag")).alias("partner_flag"),
+    F.trim(F.col("mp_tender_flag")).alias("tender_flag"),
+    F.trim(F.col("mp_sample_flag")).alias("sample_flag"),
+    F.trim(F.col("mp_other_flag")).alias("other_flag"),
+    F.trim(F.col("mp_sku_status")).alias("sku_status"),
+    F.trim(F.col("mp_mat_type")).alias("mat_type"),
+    F.trim(F.col("mp_exclude_flag")).alias("exclude_flag"),
+    F.trim(F.col("mp_note")).alias("note"),
+    F.lit(None).alias("custom_field_1"),
+    F.lit(None).alias("custom_field_2"),
+    F.lit(None).alias("custom_field_3"),
+    F.lit(None).alias("custom_field_4"),
+    F.lit(None).alias("custom_field_5"),
+    F.lit(None).alias("custom_field_6"),
+    F.lit(None).alias("custom_field_7"),
+    F.lit(None).alias("custom_field_8"),
+    F.lit(None).alias("custom_field_9"),
+    F.lit(None).alias("custom_field_10"),
+    F.lit(None).alias("custom_field_11"),
+    F.lit(None).alias("custom_field_12"),
+    F.lit(None).alias("custom_field_13"),
+    F.lit(None).alias("custom_field_14"),
+    F.lit(None).alias("custom_field_15"),
+    F.current_timestamp().alias("date_created"),
+    F.lit(None).alias("created_by"),
+    F.trim(F.col("mp_part_num_country_code")).alias("mp_part_num_country_code"),
+    F.trim(F.col("mp_part_num_country")).alias("mp_part_num_country"),
+    F.trim(F.col("mp_prod_country")).alias("mp_prod_country"),
+    F.trim(F.col("mp_prod_country_code")).alias("mp_prod_country_code"),
+    F.trim(F.col("mp_sub_region")).alias("mp_sub_region"),
+    F.trim(F.col("mp_region")).alias("mp_region"),
+    F.trim(F.col("mp_country_code")).alias("mp_country_code"),
+    F.trim(F.col("mp_global_sku_segment")).alias("mp_global_sku_segment"),
+    F.trim(F.col("mp_region_sku_segment")).alias("mp_region_sku_segment"),
+    F.trim(F.col("mp_cluster")).alias("mp_cluster")
+)
+
+# Write to Delta table
+spark_df.write.format("delta") \
+    .mode("overwrite") \
+    .option("overwriteSchema", "false") \
+    .saveAsTable(f"`{catalog}`.{schema}.scv_fact_master_product")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### scv_stage_future_actuals
+
+# COMMAND ----------
+
+# Read CSV
+df = pd.read_csv(
+    f"/dbfs{os.path.join(raw_bucket_mount_point, raw_data_directory, config['future_orders_file'])}",
+    dtype=str,
+    encoding='latin1'
+)
+
+# Convert pandas to spark
+spark_df = spark.createDataFrame(df)
+
+# Drop any unnamed columns
+spark_df = spark_df.drop(*[col for col in spark_df.columns if col.startswith("Unnamed")])
+
+# Clean + select + cast
+spark_df = spark_df.select(
+    F.trim(F.col("Line Schedule Ship Date")).alias("duedate"),
+    F.trim(F.col("Product Number")).alias("partnumber"),
+    F.trim(F.col("Ship To Location Country")).alias("country"),
+    F.trim(F.col("Product Name")).alias("product"),
+    F.col("Ordered Quantity (Sales UoM)").cast("BIGINT").alias("futureactuals"),
+    F.lit(None).cast("timestamp").alias("created_date"),
+    F.lit(None).alias("created_by"),
+    F.lit(None).cast("timestamp").alias("modified_date"),
+    F.lit(None).alias("modified_by"),
+    F.trim(F.col("Sales UOM Code")).alias("sales_uom_code"),
+    F.trim(F.col("Standard UOM Code")).alias("standard_uom_code"),
+    F.trim(F.col("Customer Name")).alias("customer_name")
+)
+
+# Write to Delta table
+spark_df.write.format("delta") \
+    .mode("overwrite") \
+    .option("overwriteSchema", "false") \
+    .saveAsTable(f"`{catalog}`.{schema}.scv_stage_future_actuals")
