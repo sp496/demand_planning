@@ -376,3 +376,75 @@ spark_df.write.format("delta") \
     .mode("overwrite") \
     .option("overwriteSchema", "false") \
     .saveAsTable(f"`{catalog}`.{schema}.scv_stage_future_actuals")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### scv_demantra_staging_data
+
+# COMMAND ----------
+
+# Read CSV (tab-separated)
+df = pd.read_csv(
+    f"/dbfs{os.path.join(raw_bucket_mount_point, raw_data_directory, config['forecast_data_file'])}",
+    dtype=str,
+    encoding='latin1',
+    sep='\t'
+)
+
+# Convert pandas to spark
+spark_df = spark.createDataFrame(df)
+
+# Drop any unnamed columns
+spark_df = spark_df.drop(*[col for col in spark_df.columns if col.startswith("Unnamed")])
+
+# Clean + select + cast
+spark_df = spark_df.select(
+    F.col("SDATE").cast("TIMESTAMP").alias("sdate"),
+    F.trim(F.col("LEVEL1")).alias("level1"),
+    F.trim(F.col("LEVEL2")).alias("level2"),
+    F.trim(F.col("LEVEL3")).alias("level3"),
+    F.trim(F.col("LEVEL4")).alias("level4"),
+    F.col("LEVEL5").cast("DOUBLE").alias("level5"),
+    F.trim(F.col("LEVEL6")).alias("level6"),
+    F.trim(F.col("LEVEL7")).alias("level7"),
+    F.col("EBS_BH_REQ_QTY_RD").cast("DOUBLE").alias("ebs_bh_req_qty_rd"),
+    F.col("SDATA4").cast("DOUBLE").alias("sdata4"),
+    F.col("FCST_HYP_FINANCIAL").cast("DOUBLE").alias("fcst_hyp_financial"),
+    F.col("CEN_INV_ADJUSTMENT").cast("DOUBLE").alias("cen_inv_adjustment"),
+    F.col("CEN_HYP_TTL_DM_FCST").cast("DOUBLE").alias("cen_hyp_ttl_dm_fcst"),
+    F.col("GIL_TOTAL_DEM_FCST").cast("DOUBLE").alias("gil_total_dem_fcst"),
+    F.col("GIL_HYP_FCST_OVERRIDE").cast("DOUBLE").alias("gil_hyp_fcst_override"),
+    F.col("GIL_UPSIDE_FCST_OVERRIDE").cast("DOUBLE").alias("gil_upside_fcst_override"),
+    F.col("GIL_GRAND_TOTAL_FCST").cast("DOUBLE").alias("gil_grand_total_fcst"),
+    F.col("GIL_ADD_GPS_FCST").cast("DOUBLE").alias("gil_add_gps_fcst"),
+    F.col("GIL_ADD_GPS_INV_ADJ").cast("DOUBLE").alias("gil_add_gps_inv_adj"),
+    F.col("GIL_ANDEAN_FCST").cast("DOUBLE").alias("gil_andean_fcst"),
+    F.col("GIL_ANDEAN_INV_ADJ").cast("DOUBLE").alias("gil_andean_inv_adj"),
+    F.trim(F.col("CREATION_DATE")).alias("creation_date"),
+    F.col("LAST_UPDATE_DATE").cast("TIMESTAMP").alias("last_update_date"),
+    F.col("BATCH_ID").cast("DOUBLE").alias("batch_id"),
+    F.trim(F.col("PROCESS_FLAG")).alias("process_flag"),
+    F.trim(F.col("ERR_MESSAGE")).alias("err_message"),
+    F.trim(F.col("ADDITIONAL_INFO1")).alias("additional_info1"),
+    F.trim(F.col("ADDITIONAL_INFO2")).alias("additional_info2"),
+    F.trim(F.col("ADDITIONAL_INFO3")).alias("additional_info3"),
+    F.trim(F.col("ADDITIONAL_INFO4")).alias("additional_info4"),
+    F.trim(F.col("ADDITIONAL_INFO5")).alias("additional_info5"),
+    F.trim(F.col("ADDITIONAL_INFO6")).alias("additional_info6"),
+    F.trim(F.col("ADDITIONAL_INFO7")).alias("additional_info7"),
+    F.trim(F.col("ADDITIONAL_INFO8")).alias("additional_info8"),
+    F.trim(F.col("ADDITIONAL_INFO9")).alias("additional_info9"),
+    F.trim(F.col("ACTIVE")).alias("active"),
+    F.col("PUBLISHED_DATE").cast("TIMESTAMP").alias("published_date"),
+    F.col("ETL_ADDED_TS").cast("TIMESTAMP").alias("etl_added_ts"),
+    F.col("LOAD_DATE").cast("TIMESTAMP").alias("load_date")
+)
+
+# Write to Delta table
+spark_df.write.format("delta") \
+    .mode("overwrite") \
+    .option("overwriteSchema", "false") \
+    .saveAsTable(f"`{catalog}`.{schema}.scv_demantra_staging_data")
+
+# COMMAND ----------
